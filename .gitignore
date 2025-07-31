@@ -1,0 +1,9 @@
+/.idea/
+/build/
+/config/
+/logs/
+/webfile/
+*.md
+*.zip
+*.bat
+*.exe

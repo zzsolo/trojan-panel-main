@@ -1,0 +1,55 @@
+# 工作流的名称
+name: Build and Push Trojan Panel Main to Docker Hub
+
+# 触发工作流的事件
+on:
+  push:
+    branches: [ "master" ] # 如果你的主分支是 main, 请改成 "main"
+
+# 工作流执行的任务
+jobs:
+  build-and-push:
+    # 任务运行的虚拟环境
+    runs-on: ubuntu-latest
+
+    # 任务包含的步骤
+    steps:
+      # 第1步：检出你的仓库代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 第2步：设置 Node.js 环境
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      # 第3步：安装依赖并执行构建命令
+      - name: Install dependencies and build
+        env:
+          VUE_APP_BASE_API: ${{ secrets.VUE_APP_BASE_API }} # 使用我们配置的API地址
+        run: |
+          npm install --legacy-peer-deps
+          npm run build
+      
+      # 第4步：上传 dist 目录作为产物，用于调试分析
+      - name: Upload dist directory as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-folder 
+          path: ./dist/
+
+      # 第5步：登录到 Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 第6步：构建 Docker 镜像并推送到 Docker Hub
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: . 
+          push: true 
+          tags: zzsolo/trojan-panel-main:latest
