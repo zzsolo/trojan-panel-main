@@ -47,9 +47,6 @@ jobs:
         with:
           images: zzsolo/trojan-panel-main
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
 
       # 第7步：构建并推送 Docker 镜像
