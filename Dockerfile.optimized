@@ -5,12 +5,16 @@ FROM golang:1.21-alpine AS builder
 WORKDIR /app
 
 # 安装必要的工具
-RUN apk add --no-cache git garble
+RUN apk add --no-cache git
+
+# 安装garble（代码混淆工具）
+RUN go install mvdan.cc/garble@v0.10.1
 
 # 设置Go环境变量
 ENV GOOS=linux
 ENV GOARCH=amd64
 ENV CGO_ENABLED=0
+ENV PATH=$PATH:/go/bin
 
 # 复制go.mod和go.sum
 COPY go.mod go.sum ./
