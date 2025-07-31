@@ -48,7 +48,10 @@
       "Bash(where:*)",
       "Bash(python:*)",
       "Bash(bash:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(./test-github-actions.sh:*)"
     ],
     "deny": []
   }
