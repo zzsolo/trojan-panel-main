@@ -46,7 +46,9 @@
       "Bash(dir:*)",
       "Bash(./mysql-installer.exe)",
       "Bash(where:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(bash:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
