@@ -28,7 +28,10 @@
       "Bash(\"/c/Program Files/Git/usr/local/go/bin/go.exe\":*)",
       "Bash(dir:*)",
       "Bash(.auto-build.bat)",
-      "Bash(cmd:*)"
+      "Bash(cmd:*)",
+      "Bash(git remote add:*)",
+      "Bash(git checkout:*)",
+      "Bash(chmod:*)"
     ],
     "deny": []
   }
