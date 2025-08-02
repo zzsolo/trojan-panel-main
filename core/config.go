@@ -110,7 +110,7 @@ func InitConfig() *Config {
 			Port: getEnvAsInt("GRPC_PORT", 8081),
 		},
 		JWT: JWTConfig{
-			Secret:     getEnv("JWT_SECRET", "your-secret-key"),
+			Secret:     getEnv("JWT_SECRET", "your-secret-key-change-me-in-production"),
 			ExpireTime: getEnvAsDuration("JWT_EXPIRE", 24*time.Hour),
 			Issuer:     getEnv("JWT_ISSUER", "trojan-panel-backend"),
 		},

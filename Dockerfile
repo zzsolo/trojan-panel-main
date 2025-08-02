@@ -22,19 +22,29 @@ FROM alpine:latest
 # Install ca-certificates for HTTPS
 RUN apk --no-cache add ca-certificates
 
-WORKDIR /root/
+# Create non-root user
+RUN addgroup -g 1001 -S trojan && \
+    adduser -u 1001 -S trojan -G trojan
+
+WORKDIR /app
 
 # Copy the binary from builder stage
 COPY --from=builder /app/trojan-panel-backend .
-
-# Copy configuration files
 COPY --from=builder /app/config ./config
 
-# Make the binary executable
-RUN chmod +x ./trojan-panel-backend
+# Change ownership to trojan user
+RUN chown -R trojan:trojan /app && \
+    chmod +x ./trojan-panel-backend
+
+# Switch to non-root user
+USER trojan
 
 # Expose port
 EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
 
 # Run the binary
 CMD ["./trojan-panel-backend"]
