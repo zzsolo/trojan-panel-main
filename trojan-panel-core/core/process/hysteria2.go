@@ -51,16 +51,10 @@ func (h *Hysteria2Process) StartHysteria2(apiPort uint) error {
 		}
 		cmd := exec.Command(binaryFilePath, "-c", configFilePath, "server")
 		if cmd.Err != nil {
-			if err = util.RemoveFile(configFilePath); err != nil {
-				return err
-			}
 			logrus.Errorf("hysteria2 command error err: %v", err)
 			return errors.New(constant.Hysteria2StartError)
 		}
 		if err := cmd.Start(); err != nil {
-			if err = util.RemoveFile(configFilePath); err != nil {
-				return err
-			}
 			logrus.Errorf("start hysteria2 error err: %v", err)
 			return errors.New(constant.Hysteria2StartError)
 		}
@@ -98,9 +92,8 @@ func (h *Hysteria2Process) releaseProcess(apiPort uint, configFilePath string) {
 			if err := cmd.Process.Release(); err != nil {
 				logrus.Errorf("hysteria2 process release error err: %v", err)
 			}
-			if err := util.RemoveFile(configFilePath); err != nil {
-				logrus.Errorf("hysteria2 process remove file error err: %v", err)
-			}
+			// DO NOT remove config file on process failure - this causes permanent data loss on restarts
+			logrus.Warnf("hysteria2 process failed for port %d, keeping config file: %s", apiPort, configFilePath)
 		}
 	}
 }

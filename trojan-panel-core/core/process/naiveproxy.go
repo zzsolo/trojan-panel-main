@@ -51,16 +51,10 @@ func (n *NaiveProxyProcess) StartNaiveProxy(apiPort uint) error {
 		}
 		cmd := exec.Command(binaryFilePath, "run", "--config", configFilePath)
 		if cmd.Err != nil {
-			if err = util.RemoveFile(configFilePath); err != nil {
-				return err
-			}
 			logrus.Errorf("naiveproxy command error err: %v", err)
 			return errors.New(constant.NaiveProxyStartError)
 		}
 		if err := cmd.Start(); err != nil {
-			if err = util.RemoveFile(configFilePath); err != nil {
-				return err
-			}
 			logrus.Errorf("start naiveproxy error err: %v", err)
 			return errors.New(constant.NaiveProxyStartError)
 		}
@@ -98,9 +92,8 @@ func (n *NaiveProxyProcess) releaseProcess(apiPort uint, configFilePath string) 
 			if err := cmd.Process.Release(); err != nil {
 				logrus.Errorf("naiveproxy process release error err: %v", err)
 			}
-			if err := util.RemoveFile(configFilePath); err != nil {
-				logrus.Errorf("naiveproxy process remove file error err: %v", err)
-			}
+			// DO NOT remove config file on process failure - this causes permanent data loss on restarts
+			logrus.Warnf("naiveproxy process failed for port %d, keeping config file: %s", apiPort, configFilePath)
 		}
 	}
 }

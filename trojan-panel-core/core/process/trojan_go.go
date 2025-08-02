@@ -51,16 +51,10 @@ func (t *TrojanGoProcess) StartTrojanGo(apiPort uint) error {
 		}
 		cmd := exec.Command(binaryFilePath, "-config", configFilePath)
 		if cmd.Err != nil {
-			if err = util.RemoveFile(configFilePath); err != nil {
-				return err
-			}
 			logrus.Errorf("trojan-go command error err: %v", err)
 			return errors.New(constant.TrojanGoStartError)
 		}
 		if err := cmd.Start(); err != nil {
-			if err = util.RemoveFile(configFilePath); err != nil {
-				return err
-			}
 			logrus.Errorf("start trojan-go error err: %v", err)
 			return errors.New(constant.TrojanGoStartError)
 		}
@@ -98,9 +92,8 @@ func (t *TrojanGoProcess) releaseProcess(apiPort uint, configFilePath string) {
 			if err := cmd.Process.Release(); err != nil {
 				logrus.Errorf("trojan-go process release error err: %v", err)
 			}
-			if err := util.RemoveFile(configFilePath); err != nil {
-				logrus.Errorf("trojan-go process remove file error err: %v", err)
-			}
+			// DO NOT remove config file on process failure - this causes permanent data loss on restarts
+			logrus.Warnf("trojan-go process failed for port %d, keeping config file: %s", apiPort, configFilePath)
 		}
 	}
 }
