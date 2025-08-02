@@ -21,7 +21,11 @@
       "Bash(cmd:*)",
       "Bash(git remote:*)",
       "Bash(git config:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "Bash(git push:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(git reset:*)"
     ],
     "deny": []
   }
